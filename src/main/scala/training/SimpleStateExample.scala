@@ -20,5 +20,8 @@ object SimpleStateExample {
       new State[S, A] {
         def run(i: S) = f(i)
       }
+
+    def state[S, A](a: A): State[S, A] =
+      State(s => (s, a))
   }
 }
