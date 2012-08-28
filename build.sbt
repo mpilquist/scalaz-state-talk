@@ -19,10 +19,6 @@ scalacOptions ++= Seq(
 
 triggeredMessage := (_ => Watched.clearScreen)
 
-libraryDependencies ++=
-  "org.scalaz" %% "scalaz-core" % "7.0.0-M3" ::
-  "org.scalaz" %% "scalaz-effect" % "7.0.0-M3" ::
-  "org.scalaz" %% "scalaz-iteratee" % "7.0.0-M3" ::
-  "org.scalatest" % "scalatest_2.9.0" % "1.8" % "test" ::
-  Nil
+libraryDependencies +=
+  "org.scalaz" %% "scalaz-core" % "7.0.0-M3"
 
