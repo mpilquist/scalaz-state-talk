@@ -1,12 +1,11 @@
 package training
 
 import scalaz.State
-import scalaz.Monoid
 
-object FourthExample {
-  type StateCache[+A] = State[Cache, A]
+/** Functional caching with scalaz.State. */
+object ThirdExample {
   trait SocialService {
-    def followerStats(u: String): StateCache[FollowerStats]
+    def followerStats(u: String): State[Cache, FollowerStats]
   }
 
   case class FollowerStats(
@@ -28,23 +27,17 @@ object FourthExample {
       Cache(stats + (u -> s), hits, misses)
   }
 
-  implicit val CacheMonoid = new Monoid[Cache] {
-    override def zero = Cache(Map.empty, 0, 0)
-    override def append(a: Cache, b: => Cache) =
-      Cache(a.stats ++ b.stats, a.hits + b.hits, a.misses + b.misses)
-  }
-
-
   object FakeSocialService extends SocialService {
-    def followerStats(u: String) = for {
-      ofs <- checkCache(u)
-      fs <- ofs match {
-        case Some(fs) => State.state[Cache, FollowerStats](fs)
-        case None => retrieve(u)
+    def followerStats(u: String) = {
+      State(checkCache(u)) flatMap { ofs =>
+        ofs match {
+          case Some(fs) => State.state(fs)
+          case None => State(retrieve(u))
+        }
       }
-    } yield fs
+    }
 
-    private def checkCache(u: String): StateCache[Option[FollowerStats]] = State { c =>
+    private def checkCache(u: String)(c: Cache): (Cache, Option[FollowerStats]) = {
       c.get(u) match {
         case Some(Timestamped(fs, ts))
           if !stale(ts) =>
@@ -55,14 +48,14 @@ object FourthExample {
     }
 
     private def stale(ts: Long): Boolean = {
-      System.currentTimeMillis - ts > (6 * 60 * 1000L)
+      System.currentTimeMillis - ts > (5 * 60 * 1000L)
     }
 
-    private def retrieve(u: String): StateCache[FollowerStats] = for {
-      fs <- State.state(callWebService(u))
-      tfs = Timestamped(fs, System.currentTimeMillis)
-      _ <- State.modify[Cache] { _.update(u, tfs) }
-    } yield fs
+    private def retrieve(u: String)(c: Cache): (Cache, FollowerStats) = {
+      val fs = callWebService(u)
+      val tfs = Timestamped(fs, System.currentTimeMillis)
+      (c.update(u, tfs), fs)
+    }
 
     private def callWebService(u: String): FollowerStats =
       FollowerStats(u, 0, 0)

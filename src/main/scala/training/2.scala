@@ -1,5 +1,6 @@
 package training
 
+/** Functional caching with explicit state passing. */
 object SecondExample {
   trait SocialService {
     def followerStats(u: String, c: Cache): (Cache, FollowerStats)

@@ -1,5 +1,6 @@
 package training
 
+/** Example service that does no caching; nothing interesting here. */
 object FirstExample {
   trait SocialService {
     /**

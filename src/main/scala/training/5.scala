@@ -1,9 +1,9 @@
 package training
 
 import scalaz.State
-import scalaz.Monoid
 import scalaz.syntax.std.option._
 
+/** Use state combinators. */
 object FifthExample {
   type StateCache[+A] = State[Cache, A]
   trait SocialService {
@@ -32,13 +32,6 @@ object FifthExample {
     def recordMiss: Cache = copy(misses = this.misses + 1)
   }
 
-  implicit val CacheMonoid = new Monoid[Cache] {
-    override def zero = Cache(Map.empty, 0, 0)
-    override def append(a: Cache, b: => Cache) =
-      Cache(a.stats ++ b.stats, a.hits + b.hits, a.misses + b.misses)
-  }
-
-
   object FakeSocialService extends SocialService {
     def followerStats(u: String) = for {
       ofs <- checkCache(u)
@@ -51,7 +44,7 @@ object FifthExample {
     } yield ofs
 
     private def stale(ts: Long): Boolean = {
-      System.currentTimeMillis - ts > (6 * 60 * 1000L)
+      System.currentTimeMillis - ts > (5 * 60 * 1000L)
     }
 
     private def retrieve(u: String): StateCache[FollowerStats] = for {
