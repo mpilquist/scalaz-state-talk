@@ -34,7 +34,11 @@ object EitherTExample {
       res <- performQuery(query, model)
     } yield res
 
-    def parseQuery(s: String): QueryStateES[StatsQuery] = QueryStateES.liftE("TODO".left)
+    def parseQuery(s: String): QueryStateES[StatsQuery] = for {
+      state <- QueryStateES.liftS(State.get[QueryState])
+      result <- QueryStateES.liftE("TODO".left[StatsQuery])
+    } yield result
+
     def performQuery(q: StatsQuery, m: Model): QueryStateES[QueryResult] = QueryStateES.liftE("TODO".left)
   }
 
