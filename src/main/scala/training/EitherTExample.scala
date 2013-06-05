@@ -25,7 +25,7 @@ object EitherTExample {
     type QueryStateES[A] = ET[QueryStateS, A]
     object QueryStateES {
       def apply[A](st: QueryStateS[String \/ A]): QueryStateES[A] = EitherT(st)
-      def liftE[A](ea: String \/ A): QueryStateES[A] = apply(Pointed[QueryStateS].point(ea))
+      def liftE[A](ea: String \/ A): QueryStateES[A] = apply(Applicative[QueryStateS].point(ea))
       def liftS[A](st: QueryStateS[A]): QueryStateES[A] = MonadTrans[ET].liftM(st)
     }
 
