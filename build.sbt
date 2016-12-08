@@ -1,24 +1,14 @@
 name := "scalaz-state-examples"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.12.0"
 
 scalacOptions ++= Seq(
+  "-feature",
   "-deprecation",
-  "-unchecked",
-  "-optimise",
   "-explaintypes",
-  "-Xcheckinit",
-  "-Xfatal-warnings",
-  "-Xlint",
-  "-Xverify",
-  "-Yclosure-elim",
-  "-Ydead-code",
-  "-Yinline",
-  "-Ywarn-all"
+  "-Xlint"
 )
 
-triggeredMessage := (_ => Watched.clearScreen)
-
 libraryDependencies +=
-  "org.scalaz" %% "scalaz-core" % "7.0.0"
+  "org.scalaz" %% "scalaz-core" % "7.2.7"
 

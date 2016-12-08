@@ -4,7 +4,7 @@ import scalaz.State
 
 /** Refactored helper methods, introduced type alias, and introduced for-comprehension. */
 object FourthExample {
-  type StateCache[+A] = State[Cache, A]
+  type StateCache[A] = State[Cache, A]
   trait SocialService {
     def followerStats(u: String): StateCache[FollowerStats]
   }

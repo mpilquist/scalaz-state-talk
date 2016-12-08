@@ -1,6 +1,8 @@
 import scalaz._
 import Scalaz._
 
+import language.higherKinds
+
 object EitherTExample {
 
   trait Model
@@ -19,9 +21,9 @@ object EitherTExample {
 
   object AfterEitherT {
     trait QueryState
-    type QueryStateS[+A] = State[QueryState, A]
+    type QueryStateS[A] = State[QueryState, A]
 
-    type ET[F[+_], A] = EitherT[F, String, A]
+    type ET[F[_], A] = EitherT[F, String, A]
     type QueryStateES[A] = ET[QueryStateS, A]
     object QueryStateES {
       def apply[A](st: QueryStateS[String \/ A]): QueryStateES[A] = EitherT(st)

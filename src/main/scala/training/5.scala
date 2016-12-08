@@ -5,7 +5,7 @@ import scalaz.syntax.std.option._
 
 /** Use state combinators. */
 object FifthExample {
-  type StateCache[+A] = State[Cache, A]
+  type StateCache[A] = State[Cache, A]
   trait SocialService {
     def followerStats(u: String): StateCache[FollowerStats]
   }
@@ -35,7 +35,7 @@ object FifthExample {
   object FakeSocialService extends SocialService {
     def followerStats(u: String) = for {
       ofs <- checkCache(u)
-      fs <- ofs.fold(State.state[Cache, FollowerStats], retrieve(u))
+      fs <- ofs.fold(retrieve(u))(State.state[Cache, FollowerStats])
     } yield fs
 
     private def checkCache(u: String): StateCache[Option[FollowerStats]] = for {
